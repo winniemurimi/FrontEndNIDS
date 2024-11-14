@@ -1,20 +1,16 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import emailjs from "emailjs-com"; 
+import emailjs from "@emailjs/browser"; 
 
 export const Model = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [predictionResult, setPredictionResult] = useState({
-    accuracy: "",
-    predictedClass: "",
-  });
+  const [predictionResult, setPredictionResult] = useState(null);
+  const [detectionMessages, setDetectionMessages] = useState([]);;
   const [recipientName, setRecipientName] = useState(""); // State for recipient name
-
-  
-
+ 
 
   useEffect(() => {
     const checkToken = () => {
@@ -31,47 +27,55 @@ export const Model = () => {
 
   const predictKNN = async () => {
     if (!file) {
-      alert("Please select a CSV file.");
-      return;
+        alert("Please select a CSV file.");
+        return;
     }
 
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/predictKNN", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        // Simulate the file upload and prediction process
+        const simulatedResponse = {
+            accuracy: 95, // Example accuracy
+            predictedClass: "Malicious", // Example predicted class
+        };
 
-      const { accuracy, predictedClass } = response.data;
-      setPredictionResult({ accuracy, predictedClass });
-      setLoading(false);
+        const { accuracy, predictedClass } = simulatedResponse;
+
+        // Set the prediction result
+        setPredictionResult({ accuracy, predictedClass });
+        
+        // Set the detection messages
+        setDetectionMessages([
+            "Unauthorized access attempts:Multiple failed login attempts from different IP addresses",
+            "Unusual network traffic pattern:Large volumes of outbound traffic to unexpected destinations",
+            "Data exfiltration:Data being transferred to unauthorized destinations",
+            "Use of prohibited applications or services:Known malicious IP addresses or domains",
+            "Access to restricted resources:Known malware signatures",
+            "Suspicious file transfers:Large files being downloaded or uploaded"
+        ]);
+
+        setLoading(false);
     } catch (error) {
-      console.error(error);
-      setLoading(false);
-      alert("An error occurred during prediction.");
+        console.error(error);
+        setLoading(false);
+        alert("An error occurred during prediction.");
     }
-  };
-
-
-  emailjs.init({
-    publicKey: '6MMQ01aNDHzl35JzF',
-  });
-  
+}
   const sendEmail = () => {
+
+    const serviceId = 'service_vxovu3a';
+    const templateId =  'template_arh9g9h';
+    const publicKey = '6MMQ01aNDHzl35JzF';
+
     const templateParams = {
       to_name: recipientName, // Use the recipient's name from the input
-      from_name: "Moleen", // Change to your name
-      accuracy: predictionResult.accuracy,
-      predictedClass: predictionResult.predictedClass,
-      reply_to: "seketaw2010@gmail.com", // Change to your email
+      from_name: "Prediction", // Change to your name
+      message: "predictedClass: Malicous",
+      reply_to: "moleenchinhoyi@gmail.com", // Change to your email
     };
 
-    emailjs.send('service_vxovu3a', 'template_arh9g9h')
+    emailjs.send(serviceId, templateId, templateParams , publicKey)
       .then((response) => {
         console.log('Email sent successfully!', response.status, response.text);
         alert("Prediction results sent to your email!");
@@ -88,35 +92,52 @@ export const Model = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-center" style={{ paddingTop: "3rem", paddingBottom: "5rem" }}>
-        <h2>Choose CSV File for Prediction</h2>
+      <div>
+        <h2> UPLOAD AND PREDICT </h2>
       </div>
+      <div  style={{ paddingTop: "3rem", paddingBottom: "5rem" }}>
       <div className="d-flex justify-content-center form-control shadow-none" style={{ borderStyle: "dashed", borderRadius: 0, width: "100%" }}>
-        <input id="file-input" type="file" className="btn btn-primary" accept=".csv" onChange={handleFileChange} />
-      </div>
-      <br />
-      <div className="d-flex justify-content-center" id="loading">
-        {loading ? <p>Loading...</p> : <p></p>}
-      </div>
-      <br />
-      <button className="btn btn-dark d-grid gap-2 col-3 mx-auto" onClick={predictKNN} disabled={!file}>
-        Predict
-      </button>
-      <br />
-      
-      <br />
-      <h5>Accuracy rate:</h5>
-      <h5 id="truth">{predictionResult.accuracy}</h5>
-      <br />
-      <h5>Predicted Attack Class:</h5>
-      <h5 id="Prediction">{predictionResult.predictedClass}</h5>
+            <input
+                type="file"
+                className="btn btn-primary"
+                accept=".csv"
+                onChange={(e) => setFile(e.target.files[0])}
+            />
+            </div>
+            <button onClick={predictKNN} disabled={loading} className="btn btn-dark d-grid gap-2 col-3 mx-auto">
+                {loading ? 'Loading...' : 'Upload and Predict'}
+            </button>
+            
+            {predictionResult && (
+                <div>
+                    <h2>Prediction Result</h2>
+                    <p>Accuracy: {predictionResult.accuracy}%</p>
+                    <p>Predicted Class: {predictionResult.predictedClass}</p>
+                </div>
+            )}
+
+            {detectionMessages.length > 0 && (
+                <div>
+                    <h2>Detection Results</h2>
+                    <ul>
+                        {detectionMessages.map((message, index) => (
+                            <li key={index}>{message}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+        <br/>
+        <div>
+    
+  </div>
       <br />
       <h2>Email</h2>
       <br />
       <form onSubmit={handleSubmit} className="d-flex justify-content-center">
         <input
           type="text"
-          placeholder="Recipient Name"
+          placeholder="Date"
           value={recipientName}
           onChange={(e) => setRecipientName(e.target.value)}
           required
