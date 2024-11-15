@@ -174,7 +174,7 @@ export const Home = (props) => {
                     <p className="card-text">
                       Used NSL-KDD dataset and predicted the attack classes.
                     </p>
-                    <button className="btn btn-primary">{ele1}</button>
+                   
                   </div>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export const Home = (props) => {
                     <p className="card-text">
                       Used KNN(k-nearest neighbors algorithm) and predicted the attack classes.
                     </p>
-                    <button className="btn btn-primary">{ele2}</button>
+                    
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ export const Home = (props) => {
                     <p className="card-text">
                       Used MERN stack to build the User Interface and Integrated with Backend.
                     </p>
-                    <button className="btn btn-primary">{ele3}</button>
+                   
                   </div>
                 </div>
               </div>
