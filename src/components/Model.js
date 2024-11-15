@@ -9,6 +9,7 @@ export const Model = () => {
   const [predictionResult, setPredictionResult] = useState(null);
   const [detectionMessages, setDetectionMessages] = useState([]);
   const [recipientName, setRecipientName] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const checkToken = () => {
@@ -113,6 +114,18 @@ export const Model = () => {
     document.body.removeChild(link);
   };
 
+  const handleChange = (e) => {
+    const value = e.target.value;
+
+    // Check if the input contains only letters
+    if (/^[a-zA-Z]*$/.test(value)) {
+      setRecipientName(value);
+      setErrorMessage(''); // Clear the error message
+    } else {
+      setErrorMessage('Please enter letters only.'); // Set error message if input is invalid
+    }
+  };
+
   return (
     <div>
       <div>
@@ -159,10 +172,12 @@ export const Model = () => {
           type="text"
           placeholder="Recipient Name"
           value={recipientName}
-          onChange={(e) => setRecipientName(e.target.value)}
+          onChange={handleChange}
           required
+         
           className="form-control mx-2"
         />
+        {errorMessage && <div className="text-danger">{errorMessage}</div>}
         <button type="submit" className="btn btn-success d-grid gap-2 col-3 mx-auto">Send Email</button>
       </form>
       <br />

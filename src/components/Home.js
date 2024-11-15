@@ -405,7 +405,7 @@ export const Home = (props) => {
         
         <br></br>
         <br></br>
-        <div className="text-center"><Link className="btn btn-dark  text-center"  to="/model"role="button">Click here to test</Link></div>
+        <div className="text-center"><Link className="btn btn-dark  text-center"  to="/model"role="button">Network Intrusion Detection system</Link></div>
         <br></br>
         <br></br>
         <section id="instructors" className="p-5 bg-primary">
